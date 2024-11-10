@@ -22,6 +22,7 @@ export default function Navigation() {
             className="fixed flex justify-between items-center w-screen h-16 bg-[#222] xl:px-32 2xl:px-96 text-[#9d9d9d]">
             <div className="flex gap-10">
                 <button onClick={() => clickTab(0)}>
+                    <h1 className="hidden">LetsMoveOJ</h1>
                     <Image src="/logo/logo.jpeg" alt="HOH Logo" width={60} height={60} priority={true}/>
                 </button>
                 {buttons.map((str, idx) => <button
