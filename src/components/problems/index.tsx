@@ -1,3 +1,7 @@
+'use client'
+
+import Link from "next/link";
+
 const problems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 export default function Problems() {
@@ -12,10 +16,12 @@ export default function Problems() {
             {problems.map((problem, index) => (
                 <div className={"flex justify-between py-2 px-6 " + (index % 2 === 0 ? "bg-[#f9f9f9]" : "")} key={index}>
                     <span className="w-14 mr-10">{index + 1}</span>
+                    <Link href={`/problem/${index}`}>
                     <span
                         className="text-blue-600 font-medium opacity-70 cursor-pointer hover:opacity-90 hover:underline hover:decoration-solid transition-all">
                         标题+test+{problem}
                     </span>
+                    </Link>
                     <span className="flex-1 text-right">{index}.00%</span>
                 </div>
             ))}
