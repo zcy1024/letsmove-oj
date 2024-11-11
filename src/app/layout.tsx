@@ -6,6 +6,7 @@ import "./globals.css";
 import {Navigation, Providers} from "@/components";
 import {Provider} from "react-redux";
 import store from "@/store";
+import "katex/dist/katex.css"
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -28,7 +29,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
             <link rel="preload" as="image" href="/logo/logo.jpeg"/>
             <link rel="icon" as="image" href="/logo/logo.jpeg"/>
         </head>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased select-none`}>
         <Providers>
             <Provider store={store}>
                 <Navigation/>
