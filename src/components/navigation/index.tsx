@@ -19,7 +19,7 @@ const buttons = [
     },
     {
         str: "出题",
-        link: "/problem/1"
+        link: "/question"
     }
 ]
 

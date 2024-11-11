@@ -4,4 +4,5 @@ import Problems from "@/components/problems";
 import ProblemContents from "@/components/problems/contents";
 import Shares from "@/components/shares";
 import ShareContents from "@/components/shares/contents";
-export { Navigation, Providers, Problems, ProblemContents, Shares, ShareContents };
+import Questions from "@/components/questions";
+export { Navigation, Providers, Problems, ProblemContents, Shares, ShareContents, Questions };
