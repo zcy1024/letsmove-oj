@@ -6,7 +6,7 @@ const problems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
 
 export default function Problems() {
     return (
-        <div className="flex flex-col divide-y min-h-[86vh] px-3 bg-white shadow-xl text-sm">
+        <div className="flex flex-col divide-y min-h-[86vh] px-3 bg-white shadow-xl text-sm select-text">
             <h2 className="py-6 text-5xl font-medium text-center">LetsMoveOJ</h2>
             <div className="flex justify-between pt-5 pb-1 px-6 font-medium">
                 <span className="w-14 mr-10">#</span>

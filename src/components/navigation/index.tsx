@@ -15,7 +15,7 @@ const buttons = [
     },
     {
         str: "分享",
-        link: "/problem/0"
+        link: "/share"
     },
     {
         str: "出题",
