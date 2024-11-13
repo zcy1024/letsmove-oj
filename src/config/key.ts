@@ -1,0 +1,6 @@
+export const PackageID = "0x269b28b6e9060e33e81959cdbe87b711a89a836b19fdcd9d23bfefd8bb5a4af5"
+export const UpgradeCap = "0x8a819bda0dc3ed6ba3ba613a90c9fcc29189294c06a256321215b40f0e2aa910"
+export const AdminList = "0x38ff9e4ca6768006484fd8e4e8d1f1acf54ef98123f7ddf5d34cb1d0c123709c"
+export const ProblemList = "0xe96c96e27885a8a0b5f07852a4a5e86f06d5aea18bba30df782e44ce11e3bf58"
+export const PersonList = "0xc55337af7d4f7c6ce98915dcca4ada75d14828ccf59b6725582b62b83e3f13bf"
+export const ShareList = "0x6e1d4ec54bbc391a985e4f57bd9df958348855feefb2f6d538cf84ec944a017d"

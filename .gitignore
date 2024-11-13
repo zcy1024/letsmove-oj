@@ -44,3 +44,7 @@ next-env.d.ts
 
 # pnpm
 *.yaml
+
+# move
+build/
+*.lock
