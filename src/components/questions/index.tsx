@@ -1,6 +1,7 @@
 'use client'
 
 import {ChangeEvent, useRef, useState} from "react";
+import {AddQuestion} from "@/lib/contracts"
 
 type dataType = {
     title: string,
@@ -52,8 +53,14 @@ export default function Questions() {
         return !(data.title === "" || data.gas === "" || data.gas === "0" || data.problemFile === undefined || data.dataFile === undefined)
     }
 
-    const submitProblem = () => {
-        console.log(data.title, data.gas, data.problemFile, data.dataFile);
+    const submitProblem = async () => {
+        // console.log(data.title, data.gas, data.problemFile, data.dataFile);
+        AddQuestion({
+            title: data.title,
+            gas: data.gas,
+            problemMd: data.problemFile!,
+            dataZip: data.dataFile!
+        })
     }
 
     return (
