@@ -13,6 +13,7 @@ public struct Data has store, drop {
 }
 
 public struct Problem has store, drop {
+    title: String,
     gas: u64,
     accepted: u64,
     submitted: u64,
@@ -48,12 +49,14 @@ fun create_data(inputs: vector<String>, outputs: vector<String>): vector<Data> {
 }
 
 fun create_problem(
+    title: String,
     gas: u64,
     detail: String,
     inputs: vector<String>,
     outputs: vector<String>
 ): Problem {
     Problem {
+        title,
         gas,
         accepted: 0,
         submitted: 0,
@@ -64,6 +67,7 @@ fun create_problem(
 
 entry fun add_problem(
     list: &mut ProblemList,
+    title: String,
     gas: u64,
     detail: String,
     inputs: vector<String>,
@@ -75,7 +79,7 @@ entry fun add_problem(
     assert!(inputs.length() == outputs.length(), E_NOT_EQUAL_NUMBER_INPUT_OUTPUT);
     let pid = list.cur_pid + 1;
     list.cur_pid = pid;
-    list.list.insert(pid, create_problem(gas, detail, inputs, outputs));
+    list.list.insert(pid, create_problem(title, gas, detail, inputs, outputs));
 }
 
 entry fun remove_problem(list: &mut ProblemList, mut pids: vector<u64>, admin_list: &AdminList, ctx: &TxContext) {

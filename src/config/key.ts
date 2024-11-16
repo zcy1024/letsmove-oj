@@ -1,6 +1,7 @@
-export const PackageID = "0xb527834997acc6c286894db9df10f1202a0ec15541b762aedf3e2cc419986968"
-export const UpgradeCap = "0x030c835239704ea74e1521502c7ec5eeea7a5ece0895f3a9279daee4a255c504"
-export const AdminList = "0x1ca52a195358902e308dd57849ddc32f3fd5d6bb7e54fb37120e1167df907a98"
-export const ProblemList = "0x8338bb73f58ee55243c6660d3b0b8e4669a134483b58c6c7a67f17d6f412a5ee"
-export const PersonList = "0xb34c0756c1220d4a0b4df36e4eba7d93e8cfe48be1a9670713a6f6342faf5d5e"
-export const ShareList = "0x18e4f755428758b44d63285293656da6e8e7e87dd4b68f3530cd6b785fb899ce"
+export const PackageID = "0x00e13132fcff4ec4452dc7cbf313fe166363fbe01285cec116dca5116a91c4b3"
+export const UpgradeCap = "0x2d0bc1d549e2069249916578cea67002cac8d240e757e66da3eef7acdc04f310"
+export const AdminList = "0xeae9217d19677dbed29946ab770750de7c655e55d1a3d9b6d1e068004c592444"
+export const ProblemList = "0xfde6519aef3815a8612cc5e9417014cdcf615de3fdff4502224385f046e3870c"
+export const PersonList = "0xe1cd6e7b93496849a075eecbe1d4c9fd2c9457037925ac4d9129243aed511528"
+export const ShareList = "0x959c38affff3a822681958584eaf2600c7970a5a1a905e825f44dccc0374698f"
+export const MoveCallAddProblem = `${PackageID}::problem::add_problem`

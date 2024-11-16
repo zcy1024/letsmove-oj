@@ -2,7 +2,7 @@
 
 import {ChangeEvent, useRef, useState} from "react";
 import {AddQuestion} from "@/lib/contracts"
-import {useCurrentAccount} from "@mysten/dapp-kit";
+import {useCurrentAccount, useSignAndExecuteTransaction} from "@mysten/dapp-kit";
 
 type dataType = {
     title: string,
@@ -51,19 +51,23 @@ export default function Questions() {
         });
     }
 
+    const [submitting, setSubmitting] = useState<boolean>(false);
     const checkCanSubmit = () => {
-        return !(data.title === "" || data.gas === "" || data.gas === "0" || data.problemFile === undefined || data.dataFile === undefined || account === null)
+        return !(data.title === "" || data.gas === "" || data.gas === "0" || data.problemFile === undefined || data.dataFile === undefined || !account || submitting)
     }
 
+    const {mutateAsync: signAndExecuteTransaction} = useSignAndExecuteTransaction()
     const submitProblem = async () => {
         // console.log(data.title, data.gas, data.problemFile, data.dataFile);
+        setSubmitting(true);
         AddQuestion({
             account: account!.address,
             title: data.title,
             gas: data.gas,
             problemMd: data.problemFile!,
-            dataZip: data.dataFile!
-        }).then();
+            dataZip: data.dataFile!,
+            signAndExecuteTransaction
+        }).then(() => setSubmitting(false));
     }
 
     return (
@@ -102,7 +106,7 @@ export default function Questions() {
                     className={"flex justify-around px-2 rounded-full transition-all " + (checkCanSubmit() ? "bg-[#f9f9f9] cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
                     onClick={submitProblem}
                     disabled={!checkCanSubmit()}>
-                    提交
+                    {!submitting ? "提交" : "按F12查看详情..."}
                 </button>
             </div>
         </div>
