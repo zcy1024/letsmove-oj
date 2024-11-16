@@ -5,7 +5,7 @@ type initialStateType = {
 };
 
 const initialState = {
-    tab: 0
+    tab: -1
 } as initialStateType;
 
 const ojStore = createSlice({

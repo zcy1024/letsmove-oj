@@ -1,24 +1,29 @@
 import JSZip from "jszip";
-import type {publishResponseType} from "@/utils";
-import {publish, read, getBlobId} from "@/utils"
+import {getBlobIdAfterPublish, read} from "@/utils"
 
 type Props = {
+    account: string,
     title: string,
     gas: string,
     problemMd: File,
     dataZip: File
 }
 
-export default async function AddQuestion({title, gas, problemMd, dataZip}: Props) {
+export default async function AddQuestion({account, title, gas, problemMd, dataZip}: Props) {
     console.log(title, gas, problemMd, dataZip);
-    publish({toBePublished: await problemMd.text()}).then(async (res: publishResponseType) => {
-        const blobId = getBlobId(res);
-        console.log(await read({blobId: blobId}));
-    });
 
-    // const zip = new JSZip();
-    // zip.loadAsync(dataZip).then(async (res) => {
-    //     const str = await res.files["1.out"].async('string');
-    //     console.log(str);
-    // });
+    const problemBlobId = await getBlobIdAfterPublish(account, await problemMd.text());
+
+    const inputBlobIds: string[] = [];
+    const outputBlobIds: string[] = [];
+    const zip = new JSZip();
+    const res = await zip.loadAsync(dataZip);
+    let idx = 1;
+    while (res.files[idx.toString() + ".in"] && res.files[idx.toString() + ".out"]) {
+        const inputStr = await res.files[idx.toString() + ".in"].async('string');
+        inputBlobIds.push(await getBlobIdAfterPublish(account, inputStr));
+        const outputStr = await res.files[idx.toString() + ".out"].async('string');
+        outputBlobIds.push(await getBlobIdAfterPublish(account, outputStr));
+        idx += 1;
+    }
 }

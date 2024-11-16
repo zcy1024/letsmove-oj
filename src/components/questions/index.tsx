@@ -2,6 +2,7 @@
 
 import {ChangeEvent, useRef, useState} from "react";
 import {AddQuestion} from "@/lib/contracts"
+import {useCurrentAccount} from "@mysten/dapp-kit";
 
 type dataType = {
     title: string,
@@ -11,6 +12,7 @@ type dataType = {
 }
 
 export default function Questions() {
+    const account = useCurrentAccount();
     const [data, setData] = useState<dataType>({
         title: "",
         gas: "",
@@ -50,17 +52,18 @@ export default function Questions() {
     }
 
     const checkCanSubmit = () => {
-        return !(data.title === "" || data.gas === "" || data.gas === "0" || data.problemFile === undefined || data.dataFile === undefined)
+        return !(data.title === "" || data.gas === "" || data.gas === "0" || data.problemFile === undefined || data.dataFile === undefined || account === null)
     }
 
     const submitProblem = async () => {
         // console.log(data.title, data.gas, data.problemFile, data.dataFile);
         AddQuestion({
+            account: account!.address,
             title: data.title,
             gas: data.gas,
             problemMd: data.problemFile!,
             dataZip: data.dataFile!
-        })
+        }).then();
     }
 
     return (
@@ -93,8 +96,7 @@ export default function Questions() {
                     <span
                         className="absolute text-center px-2 cursor-pointer bg-[#f9f9f9] rounded-full hover:scale-105 active:scale-95 transition-all"
                         onClick={() => dataRef.current?.click()}>上传数据</span>
-                    <span
-                        className="max-w-20 max-h-6 overflow-hidden">{data.dataFile ? data.dataFile.name : "请选择文件"}</span>
+                    <span>{data.dataFile ? data.dataFile.name : "请选择文件"}</span>
                 </div>
                 <button
                     className={"flex justify-around px-2 rounded-full transition-all " + (checkCanSubmit() ? "bg-[#f9f9f9] cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
