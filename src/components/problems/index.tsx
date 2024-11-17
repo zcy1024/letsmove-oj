@@ -1,10 +1,12 @@
 'use client'
 
 import Link from "next/link";
-
-const problems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+import {useAppSelector} from "@/store";
+import {stringToMap} from "@/store/modules/oj";
 
 export default function Problems() {
+    const problems = stringToMap(useAppSelector(state => state.oj.problems));
+
     return (
         <div className="flex flex-col divide-y min-h-[86vh] px-3 bg-white shadow-xl text-sm select-text">
             <h2 className="py-6 text-5xl font-medium text-center">LetsMoveOJ</h2>
@@ -13,18 +15,23 @@ export default function Problems() {
                 <span>标题</span>
                 <span className="flex-1 text-right">通过率</span>
             </div>
-            {problems.map((problem, index) => (
-                <div className={"flex justify-between py-2 px-6 " + (index % 2 === 0 ? "bg-[#f9f9f9]" : "")} key={index}>
-                    <span className="w-14 mr-10">{index + 1}</span>
-                    <Link href={`/problem/${index}`}>
+            {Array.from(problems.keys()).map((key, index) => {
+                const problem = problems.get(key)!;
+                return (
+                    <div className={"flex justify-between py-2 px-6 " + (index % 2 === 0 ? "bg-[#f9f9f9]" : "")}
+                         key={index}>
+                        <span className="w-14 mr-10">{key}</span>
+                        <Link href={`/problem/${key}`}>
                     <span
                         className="text-blue-600 font-medium opacity-70 cursor-pointer hover:opacity-90 hover:underline hover:decoration-solid transition-all">
-                        标题+test+{problem}
+                        {problem.title}
                     </span>
-                    </Link>
-                    <span className="flex-1 text-right">{index}.00%</span>
-                </div>
-            ))}
+                        </Link>
+                        <span
+                            className="flex-1 text-right">{(Number(problem.accepted) === 0 ? 0 : Number(problem.accepted) / Number(problem.submitted) * 100).toFixed(2)}%</span>
+                    </div>
+                )
+            })}
         </div>
     )
 }
