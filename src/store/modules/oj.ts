@@ -6,7 +6,9 @@ export type problemType = {
     gas: string,
     detail: string,
     accepted: number,
-    submitted: number
+    submitted: number,
+    inputs: string[],
+    outputs: string[]
 };
 
 type initialStateType = {

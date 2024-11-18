@@ -6,17 +6,18 @@ import {useAppSelector} from "@/store";
 import {read, strToMDXElement} from "@/utils"
 import {MDXRemote, type MDXRemoteSerializeResult} from "next-mdx-remote";
 import {useRouter} from "next/navigation";
+import {submit} from "@/lib/contracts"
 
 export default function ProblemContents({id}: { id: string }) {
-    const [file, setFile] = useState<File | undefined>(undefined);
-    const fileRef = useRef<HTMLInputElement>(null);
+    const [packageID, setPackageID] = useState<string>("");
+    const packageIDRef = useRef<HTMLInputElement>(null);
 
-    const changeFile = (event: ChangeEvent<HTMLInputElement> | undefined) => {
-        setFile(event?.target?.files?.[0]);
+    const changePackageID = (event: ChangeEvent<HTMLInputElement>) => {
+        setPackageID(event.target.value);
     }
 
-    const submitFile = async () => {
-        console.log(await file?.text());
+    const submitAnswer = async () => {
+        submit(id, packageID).then();
     }
 
     const router = useRouter();
@@ -68,22 +69,26 @@ export default function ProblemContents({id}: { id: string }) {
                     <span>总提交数：</span>
                     <span>{problem?.submitted}</span>
                 </p>
-                <p className="flex justify-between items-center h-14 pl-1 pr-3">
-                    <input className="w-0 opacity-0" name="move" type="file" accept=".move" ref={fileRef}
-                           onChange={changeFile}/>
-                    <span
-                        className="absolute px-2 h-8 text-center leading-8 cursor-pointer bg-[#f9f9f9] rounded-full hover:scale-105 active:scale-95 transition-all"
-                        onClick={() => fileRef.current?.click()}>上传文件</span>
-                    <span>{file ? file.name : "请选择文件"}</span>
+                <p className="flex justify-between items-center h-14 px-3">
+                    <span>PackageID:</span>
+                    <input className="px-2 text-right focus:outline-0" type="text" ref={packageIDRef} onChange={changePackageID}/>
                 </p>
                 <p className="flex justify-between items-center h-14 pl-1 pr-3 bg-[#f9f9f9]">
                     <button
-                        className={"px-2 h-8 text-center leading-8 rounded-full transition-all " + (file ? "bg-white cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
-                        onClick={submitFile}
-                        disabled={!file}>提交答案
+                        className={"px-2 h-8 text-center leading-8 rounded-full transition-all " + (packageID ? "bg-white cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
+                        onClick={submitAnswer}
+                        disabled={!packageID}>提交答案
                     </button>
                     <span>Accepted?</span>
                 </p>
+                {/*<p className="flex justify-between items-center h-14 pl-1 pr-3">*/}
+                {/*    <input className="w-0 opacity-0" name="move" type="file" accept="" ref={fileRef}*/}
+                {/*           onChange={changeFile}/>*/}
+                {/*    <span*/}
+                {/*        className="absolute px-2 h-8 text-center leading-8 cursor-pointer bg-[#f9f9f9] rounded-full hover:scale-105 active:scale-95 transition-all"*/}
+                {/*        onClick={() => fileRef.current?.click()}>上传文件</span>*/}
+                {/*    <span>{file ? file.name : "请选择合约所在目录"}</span>*/}
+                {/*</p>*/}
             </div>
         </div>
     )
