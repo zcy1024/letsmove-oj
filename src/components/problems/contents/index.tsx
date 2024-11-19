@@ -6,7 +6,8 @@ import {useAppSelector} from "@/store";
 import {read, strToMDXElement} from "@/utils"
 import {MDXRemote, type MDXRemoteSerializeResult} from "next-mdx-remote";
 import {useRouter} from "next/navigation";
-import {submit} from "@/lib/contracts"
+import {submit, acceptProblem} from "@/lib/contracts"
+import {useCurrentAccount} from "@mysten/dapp-kit";
 
 export default function ProblemContents({id}: { id: string }) {
     const [packageID, setPackageID] = useState<string>("");
@@ -16,8 +17,23 @@ export default function ProblemContents({id}: { id: string }) {
         setPackageID(event.target.value);
     }
 
+    const account = useCurrentAccount();
+    const [tips, setTips] = useState<string>("");
+    const [submitting, setSubmitting] = useState<boolean>(false);
     const submitAnswer = async () => {
-        submit(id, packageID).then();
+        setSubmitting(true);
+        submit(id, packageID, setTips).then(ret => {
+            if (ret === "Accepted") {
+                setTips("Recording...");
+                acceptProblem(account!.address, id).then(success => {
+                    setTips(success ? ret : "Recording Error");
+                    setSubmitting(false);
+                });
+            } else {
+                setTips(ret);
+                setSubmitting(false);
+            }
+        });
     }
 
     const router = useRouter();
@@ -75,11 +91,11 @@ export default function ProblemContents({id}: { id: string }) {
                 </p>
                 <p className="flex justify-between items-center h-14 pl-1 pr-3 bg-[#f9f9f9]">
                     <button
-                        className={"px-2 h-8 text-center leading-8 rounded-full transition-all " + (packageID ? "bg-white cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
+                        className={"px-2 h-8 text-center leading-8 rounded-full transition-all " + (packageID && !submitting && account ? "bg-white cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
                         onClick={submitAnswer}
-                        disabled={!packageID}>提交答案
+                        disabled={!packageID || submitting || !account}>提交答案
                     </button>
-                    <span>Accepted?</span>
+                    <span className={submitting ? "" : (tips === "Accepted" ? "text-green-600" : "text-red-600")}>{tips}</span>
                 </p>
                 {/*<p className="flex justify-between items-center h-14 pl-1 pr-3">*/}
                 {/*    <input className="w-0 opacity-0" name="move" type="file" accept="" ref={fileRef}*/}

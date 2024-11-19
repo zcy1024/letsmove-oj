@@ -3,6 +3,7 @@ import {Transaction, TransactionArgument} from "@mysten/sui/transactions";
 import {read} from "@/utils";
 import moveCall from "@/lib/contracts/submit/moveCall";
 import {suiClient} from "@/config";
+import {Dispatch, SetStateAction} from "react";
 
 function strToVec(str: string) {
     const ret: string[] = [];
@@ -73,8 +74,9 @@ async function checkAnswer(output: string, eventOutput: string, createOutput: st
     return false;
 }
 
-export default async function submit(pid: string, packageID: string) {
+export default async function submit(pid: string, packageID: string, setTips: Dispatch<SetStateAction<string>>) {
     // pid: 2 PackageID: 0xd3176922e3ff9d2f654385c481adcfeacffc6de1b6c0264731fb5e47ab87e83b
+    setTips("Checking problem...");
     const problem = await getProblemByID(pid);
     if (!problem) {
         return "Pid Error!";
@@ -84,6 +86,7 @@ export default async function submit(pid: string, packageID: string) {
     const outputs = problem.outputs;
     let i = 0;
     while (i < inputs.length) {
+        setTips(`Running on Test #${i + 1}`);
         const input = inputs[i];
         const output = outputs[i];
         const tx = new Transaction();
@@ -101,10 +104,15 @@ export default async function submit(pid: string, packageID: string) {
             args.push(pure(tx, opt, val));
         });
 
-        const [eventOutput, createOutput] = await moveCall(args, packageID);
-        const isOK = await checkAnswer(output, eventOutput, createOutput);
-        if (!isOK) {
-            return `Error on Test #${i}`
+        try {
+            const [eventOutput, createOutput] = await moveCall(args, packageID, problem.gas);
+            const isOK = await checkAnswer(output, eventOutput, createOutput);
+            if (!isOK) {
+                return `Error on Test #${i + 1}`
+            }
+        } catch (error) {
+            console.log(error);
+            return "Run Time Error"
         }
 
         i = i + 1;
