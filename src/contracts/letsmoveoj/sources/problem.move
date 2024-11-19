@@ -6,6 +6,7 @@ use letsmoveoj::admin::AdminList;
 
 const E_NOT_ADMIN: u64 = 0;
 const E_NOT_EQUAL_NUMBER_INPUT_OUTPUT: u64 = 1;
+const E_NOT_CORRECT_PROBLEM: u64 = 2;
 
 public struct Data has store, drop {
     input: String,
@@ -92,4 +93,16 @@ entry fun remove_problem(list: &mut ProblemList, mut pids: vector<u64>, admin_li
 
 public fun has_problem(list: &ProblemList, pid: u64): bool {
     list.list.contains(&pid)
+}
+
+entry fun try_to_solve(pid: u64, list: &mut ProblemList, admin_list: &AdminList, ctx: &TxContext) {
+    assert!(admin_list.is_admin(ctx.sender()), E_NOT_ADMIN);
+    assert!(list.has_problem(pid), E_NOT_CORRECT_PROBLEM);
+    let problem = list.list.get_mut(&pid);
+    problem.submitted = problem.submitted + 1;
+}
+
+public fun accept_problem(list: &mut ProblemList, pid: u64) {
+    let problem = list.list.get_mut(&pid);
+    problem.accepted = problem.accepted + 1;
 }

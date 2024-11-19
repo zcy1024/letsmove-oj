@@ -35,7 +35,7 @@ entry fun accept_problem(
     user: address,
     list: &mut PersonList,
     pid: u64,
-    problem_list: &ProblemList,
+    problem_list: &mut ProblemList,
     admin_list: &AdminList,
     ctx: &TxContext
 ) {
@@ -45,6 +45,7 @@ entry fun accept_problem(
         new_user(user, list);
     };
     list.list[&user].accepted.push_back(pid);
+    problem_list.accept_problem(pid);
 }
 
 public fun accepted(list: &mut PersonList, user: address, pid: u64): bool {

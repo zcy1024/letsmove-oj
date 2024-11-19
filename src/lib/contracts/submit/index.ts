@@ -105,7 +105,7 @@ export default async function submit(pid: string, packageID: string, setTips: Di
         });
 
         try {
-            const [eventOutput, createOutput] = await moveCall(args, packageID, problem.gas);
+            const [eventOutput, createOutput] = await moveCall(args, packageID, problem.gas, pid);
             const isOK = await checkAnswer(output, eventOutput, createOutput);
             if (!isOK) {
                 return `Error on Test #${i + 1}`

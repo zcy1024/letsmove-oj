@@ -1,25 +1,34 @@
 'use client'
 
 import {ChangeEvent, useEffect, useRef, useState} from "react";
-import {stringToMap, problemType} from "@/store/modules/oj";
-import {useAppSelector} from "@/store";
+import {stringToMap, problemType, refreshData} from "@/store/modules/oj";
+import {AppDispatch, useAppSelector} from "@/store";
 import {read, strToMDXElement} from "@/utils"
 import {MDXRemote, type MDXRemoteSerializeResult} from "next-mdx-remote";
 import {useRouter} from "next/navigation";
 import {submit, acceptProblem} from "@/lib/contracts"
 import {useCurrentAccount} from "@mysten/dapp-kit";
+import {useDispatch} from "react-redux";
 
 export default function ProblemContents({id}: { id: string }) {
     const [packageID, setPackageID] = useState<string>("");
     const packageIDRef = useRef<HTMLInputElement>(null);
 
+    const account = useCurrentAccount();
+    const dispatch = useDispatch<AppDispatch>();
+    const [tips, setTips] = useState<string>("");
+    const [submitting, setSubmitting] = useState<boolean>(false);
+
+    const router = useRouter();
+    const problems = stringToMap(useAppSelector(state => state.oj.problems));
+    const [problem, setProblem] = useState<problemType | undefined>(undefined);
+
+    const [detail, setDetail] = useState<MDXRemoteSerializeResult | null>();
+
     const changePackageID = (event: ChangeEvent<HTMLInputElement>) => {
         setPackageID(event.target.value);
     }
 
-    const account = useCurrentAccount();
-    const [tips, setTips] = useState<string>("");
-    const [submitting, setSubmitting] = useState<boolean>(false);
     const submitAnswer = async () => {
         setSubmitting(true);
         submit(id, packageID, setTips).then(ret => {
@@ -28,17 +37,16 @@ export default function ProblemContents({id}: { id: string }) {
                 acceptProblem(account!.address, id).then(success => {
                     setTips(success ? ret : "Recording Error");
                     setSubmitting(false);
+                    dispatch(refreshData(0));
                 });
             } else {
                 setTips(ret);
                 setSubmitting(false);
+                dispatch(refreshData(0));
             }
         });
     }
 
-    const router = useRouter();
-    const problems = stringToMap(useAppSelector(state => state.oj.problems));
-    const [problem, setProblem] = useState<problemType | undefined>(undefined);
     useEffect(() => {
         if (problems.size === 0)
             return
@@ -49,7 +57,7 @@ export default function ProblemContents({id}: { id: string }) {
             setProblem(problems.get(id));
         }
     }, [problems, id, problem, router]);
-    const [detail, setDetail] = useState<MDXRemoteSerializeResult | null>();
+
     useEffect(() => {
         if (problem && !detail) {
             const initDetail = async () => {
