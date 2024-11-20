@@ -11,7 +11,7 @@ export default function ProblemLayout({children}: {children: ReactNode}) {
     const account = useCurrentAccount();
     useEffect(() => {
         dispatch(setTab(0));
-        dispatch(refreshData(0, account?.address));
+        dispatch(refreshData(account?.address));
     }, [dispatch, account]);
     return (
         <>

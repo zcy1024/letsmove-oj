@@ -1,5 +1,5 @@
 import {createSlice, Dispatch, ThunkDispatch, UnknownAction} from "@reduxjs/toolkit";
-import {getPersonalInfo, getProblems} from "@/lib/contracts"
+import {getPersonalInfo, getProblems, getShare} from "@/lib/contracts"
 
 export type problemType = {
     title: string,
@@ -16,10 +16,18 @@ export type personalType = {
     share: string[]
 }
 
+export type shareType = {
+    pid: string,
+    sharer: string,
+    share_time: string,
+    content: string
+}
+
 type initialStateType = {
     tab: number,
     problems: string,
-    personal: personalType
+    personal: personalType,
+    share: string
 };
 
 const initialState = {
@@ -28,7 +36,8 @@ const initialState = {
     personal: {
         accepted: [],
         share: []
-    }
+    },
+    share: "{}"
 } as initialStateType;
 
 const ojStore = createSlice({
@@ -43,27 +52,32 @@ const ojStore = createSlice({
         },
         setPersonal(state, action: { payload: personalType }) {
             state.personal = action.payload
+        },
+        setShare(state, action: { payload: string }) {
+            state.share = action.payload
         }
     }
 })
 
-const {setTab, setProblems, setPersonal} = ojStore.actions;
+const {setTab, setProblems, setPersonal, setShare} = ojStore.actions;
 
-const refreshData = (tab: number, user?: string) => {
+const refreshData = (user?: string) => {
     return async (dispatch: ThunkDispatch<{
         oj: initialStateType;
     }, undefined, UnknownAction> & Dispatch) => {
-        if (tab === 0) {
-            dispatch(setProblems(JSON.stringify(Object.fromEntries(await getProblems()))));
-        }
+        dispatch(setProblems(JSON.stringify(Object.fromEntries(await getProblems()))));
+        dispatch(setShare(JSON.stringify(Object.fromEntries(await getShare()))));
         if (user) {
             dispatch(setPersonal(await getPersonalInfo(user)));
         }
     }
 }
 
-const stringToMap = (str: string) => {
-    return new Map<string, problemType>(Object.entries(JSON.parse(str)));
+const stringToMap = (str: string, type: number) => {
+    if (type === 0) {
+        return new Map<string, problemType>(Object.entries(JSON.parse(str)));
+    }
+    return new Map<string, shareType>(Object.entries(JSON.parse(str)));
 }
 
 export {setTab, refreshData, stringToMap};

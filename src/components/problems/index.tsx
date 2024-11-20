@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import {useAppSelector} from "@/store";
-import {stringToMap} from "@/store/modules/oj";
+import {problemType, stringToMap} from "@/store/modules/oj";
 
 export default function Problems() {
-    const problems = stringToMap(useAppSelector(state => state.oj.problems));
+    const problems = stringToMap(useAppSelector(state => state.oj.problems), 0) as Map<string, problemType>;
 
     return (
         <div className="flex flex-col divide-y min-h-[86vh] px-3 bg-white shadow-xl text-sm select-text">

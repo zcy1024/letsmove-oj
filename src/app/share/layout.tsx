@@ -11,7 +11,7 @@ export default function ShareLayout({children}: {children: ReactNode}) {
     const account = useCurrentAccount();
     useEffect(() => {
         dispatch(setTab(1));
-        dispatch(refreshData(1, account?.address));
+        dispatch(refreshData(account?.address));
     }, [dispatch, account]);
     return (
         <>

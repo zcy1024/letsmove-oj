@@ -20,7 +20,7 @@ export default function ProblemContents({id}: { id: string }) {
     const [submitting, setSubmitting] = useState<boolean>(false);
 
     const router = useRouter();
-    const problems = stringToMap(useAppSelector(state => state.oj.problems));
+    const problems = stringToMap(useAppSelector(state => state.oj.problems), 0) as Map<string, problemType>;
     const [problem, setProblem] = useState<problemType | undefined>(undefined);
 
     const [detail, setDetail] = useState<MDXRemoteSerializeResult | null>();
@@ -47,7 +47,7 @@ export default function ProblemContents({id}: { id: string }) {
                 acceptProblem(account!.address, id).then(success => {
                     setTips(success ? ret : "Recording Error");
                     setSubmitting(false);
-                    dispatch(refreshData(0, account?.address));
+                    dispatch(refreshData(account?.address));
                     if (success) {
                         acceptedList.push(id);
                     }
@@ -55,7 +55,7 @@ export default function ProblemContents({id}: { id: string }) {
             } else {
                 setTips(ret);
                 setSubmitting(false);
-                dispatch(refreshData(0, account?.address));
+                dispatch(refreshData(account?.address));
             }
         });
     }
@@ -109,7 +109,7 @@ export default function ProblemContents({id}: { id: string }) {
         <div className="min-h-[86vh] px-3 bg-white shadow-xl">
             <h2 className="py-10 text-2xl select-text">{id}. {problem?.title}</h2>
             <hr/>
-            <article className="prose max-w-[50rem] select-text">
+            <article className="pt-3 prose max-w-[50rem] select-text">
                 {detail && <MDXRemote {...detail}/>}
             </article>
             <div
