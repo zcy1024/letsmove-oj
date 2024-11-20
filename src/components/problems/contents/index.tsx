@@ -6,7 +6,7 @@ import {AppDispatch, useAppSelector} from "@/store";
 import {read, strToMDXElement} from "@/utils"
 import {MDXRemote, type MDXRemoteSerializeResult} from "next-mdx-remote";
 import {useRouter} from "next/navigation";
-import {submit, acceptProblem} from "@/lib/contracts"
+import {submit, acceptProblem, personalShare} from "@/lib/contracts"
 import {useCurrentAccount} from "@mysten/dapp-kit";
 import {useDispatch} from "react-redux";
 
@@ -25,6 +25,16 @@ export default function ProblemContents({id}: { id: string }) {
 
     const [detail, setDetail] = useState<MDXRemoteSerializeResult | null>();
 
+    const acceptedList = useAppSelector(state => state.oj.personal.accepted);
+    const sharedList = useAppSelector(state => state.oj.personal.share);
+    const [hasAccepted, setHasAccepted] = useState<boolean>(false);
+    const [hasShared, setHasShared] = useState<boolean>(false);
+
+    const fileRef = useRef<HTMLInputElement>(null);
+    const [file, setFile] = useState<File | undefined>(undefined);
+    const [sharing, setSharing] = useState<boolean>(false);
+    const [shareTips, setShareTips] = useState<string>("");
+
     const changePackageID = (event: ChangeEvent<HTMLInputElement>) => {
         setPackageID(event.target.value);
     }
@@ -37,12 +47,15 @@ export default function ProblemContents({id}: { id: string }) {
                 acceptProblem(account!.address, id).then(success => {
                     setTips(success ? ret : "Recording Error");
                     setSubmitting(false);
-                    dispatch(refreshData(0));
+                    dispatch(refreshData(0, account?.address));
+                    if (success) {
+                        acceptedList.push(id);
+                    }
                 });
             } else {
                 setTips(ret);
                 setSubmitting(false);
-                dispatch(refreshData(0));
+                dispatch(refreshData(0, account?.address));
             }
         });
     }
@@ -72,6 +85,26 @@ export default function ProblemContents({id}: { id: string }) {
         }
     }, [problem, detail]);
 
+    useEffect(() => {
+        setHasAccepted(acceptedList.find(it => it === id) !== undefined);
+        setHasShared(sharedList.find(it => it === id) !== undefined);
+    }, [setHasAccepted, setHasShared, acceptedList, sharedList, id]);
+
+    const fileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setFile(event.target.files![0]);
+    }
+
+    const shareFile = () => {
+        setSharing(true);
+        personalShare(account!.address, id, file!, setShareTips).then(ret => {
+            setShareTips(ret);
+            setSharing(false);
+            if (ret === "Congratulations") {
+                sharedList.push(id);
+            }
+        });
+    }
+
     return (
         <div className="min-h-[86vh] px-3 bg-white shadow-xl">
             <h2 className="py-10 text-2xl select-text">{id}. {problem?.title}</h2>
@@ -95,7 +128,8 @@ export default function ProblemContents({id}: { id: string }) {
                 </p>
                 <p className="flex justify-between items-center h-14 px-3">
                     <span>PackageID:</span>
-                    <input className="px-2 text-right focus:outline-0" type="text" ref={packageIDRef} onChange={changePackageID}/>
+                    <input className="px-2 text-right focus:outline-0" type="text" ref={packageIDRef}
+                           onChange={changePackageID}/>
                 </p>
                 <p className="flex justify-between items-center h-14 pl-1 pr-3 bg-[#f9f9f9]">
                     <button
@@ -103,16 +137,30 @@ export default function ProblemContents({id}: { id: string }) {
                         onClick={submitAnswer}
                         disabled={!packageID || submitting || !account}>提交答案
                     </button>
-                    <span className={submitting ? "" : (tips === "Accepted" ? "text-green-600" : "text-red-600")}>{tips}</span>
+                    <span
+                        className={submitting ? "" : (tips === "Accepted" ? "text-green-600" : "text-red-600")}>{tips}</span>
                 </p>
-                {/*<p className="flex justify-between items-center h-14 pl-1 pr-3">*/}
-                {/*    <input className="w-0 opacity-0" name="move" type="file" accept="" ref={fileRef}*/}
-                {/*           onChange={changeFile}/>*/}
-                {/*    <span*/}
-                {/*        className="absolute px-2 h-8 text-center leading-8 cursor-pointer bg-[#f9f9f9] rounded-full hover:scale-105 active:scale-95 transition-all"*/}
-                {/*        onClick={() => fileRef.current?.click()}>上传文件</span>*/}
-                {/*    <span>{file ? file.name : "请选择合约所在目录"}</span>*/}
-                {/*</p>*/}
+                {hasAccepted &&
+                    <>
+                        <p className="flex justify-between items-center h-14 pl-1 pr-3">
+                            <input className="w-0 opacity-0" name="move" type="file" accept=".md" ref={fileRef}
+                                   onChange={fileChange}/>
+                            <span
+                                className="absolute px-2 h-8 text-center leading-8 cursor-pointer bg-[#f9f9f9] rounded-full hover:scale-105 active:scale-95 transition-all"
+                                onClick={() => fileRef.current?.click()}>上传文件</span>
+                            <span>{file ? file.name : "请选择您的分享（.md）"}</span>
+                        </p>
+                        <p className="flex justify-between items-center h-14 pl-1 pr-3 bg-[#f9f9f9]">
+                            <button
+                                className={"px-2 h-8 w-[4.5rem] text-center leading-8 rounded-full transition-all " + (file ? "bg-white cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
+                                onClick={shareFile}
+                                disabled={!file}>{hasShared ? "再次分享" : "分享"}
+                            </button>
+                            <span
+                                className={sharing ? "" : (shareTips === "Congratulations" ? "text-green-600" : "text-red-600")}>{shareTips}</span>
+                        </p>
+                    </>
+                }
             </div>
         </div>
     )

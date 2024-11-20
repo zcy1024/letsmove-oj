@@ -1,5 +1,5 @@
 import {createSlice, Dispatch, ThunkDispatch, UnknownAction} from "@reduxjs/toolkit";
-import {getProblems} from "@/lib/contracts"
+import {getPersonalInfo, getProblems} from "@/lib/contracts"
 
 export type problemType = {
     title: string,
@@ -11,14 +11,24 @@ export type problemType = {
     outputs: string[]
 };
 
+export type personalType = {
+    accepted: string[],
+    share: string[]
+}
+
 type initialStateType = {
     tab: number,
-    problems: string
+    problems: string,
+    personal: personalType
 };
 
 const initialState = {
     tab: -1,
-    problems: "{}"
+    problems: "{}",
+    personal: {
+        accepted: [],
+        share: []
+    }
 } as initialStateType;
 
 const ojStore = createSlice({
@@ -30,18 +40,24 @@ const ojStore = createSlice({
         },
         setProblems(state, action: { payload: string }) {
             state.problems = action.payload
+        },
+        setPersonal(state, action: { payload: personalType }) {
+            state.personal = action.payload
         }
     }
 })
 
-const {setTab, setProblems} = ojStore.actions;
+const {setTab, setProblems, setPersonal} = ojStore.actions;
 
-const refreshData = (tab: number) => {
+const refreshData = (tab: number, user?: string) => {
     return async (dispatch: ThunkDispatch<{
         oj: initialStateType;
     }, undefined, UnknownAction> & Dispatch) => {
         if (tab === 0) {
             dispatch(setProblems(JSON.stringify(Object.fromEntries(await getProblems()))));
+        }
+        if (user) {
+            dispatch(setPersonal(await getPersonalInfo(user)));
         }
     }
 }
