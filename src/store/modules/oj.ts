@@ -69,6 +69,8 @@ const refreshData = (user?: string) => {
         dispatch(setShare(JSON.stringify(Object.fromEntries(await getShare()))));
         if (user) {
             dispatch(setPersonal(await getPersonalInfo(user)));
+        } else {
+            dispatch(setPersonal({accepted: [], share: []}));
         }
     }
 }

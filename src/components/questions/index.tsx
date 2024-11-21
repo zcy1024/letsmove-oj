@@ -1,9 +1,11 @@
 'use client'
 
-import {ChangeEvent, useRef, useState} from "react";
+import {ChangeEvent, useEffect, useRef, useState} from "react";
 import {AddQuestion} from "@/lib/contracts"
 import {useCurrentAccount, useSignAndExecuteTransaction} from "@mysten/dapp-kit";
 import Link from "next/link";
+import {isPermitted} from "@/lib/contracts"
+import {useRouter} from "next/navigation";
 
 type dataType = {
     title: string,
@@ -53,8 +55,22 @@ export default function Questions() {
     }
 
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [permitted, setPermitted] = useState<boolean>(false);
+    const router = useRouter();
+    useEffect(() => {
+        if (account) {
+            isPermitted(account.address).then(permission => {
+                setPermitted(permission);
+                if (!permission) {
+                    router.push("/");
+                }
+            });
+        } else {
+            setPermitted(false);
+        }
+    }, [account, router]);
     const checkCanSubmit = () => {
-        return !(data.title === "" || data.gas === "" || data.gas === "0" || data.problemFile === undefined || data.dataFile === undefined || !account || submitting)
+        return !(data.title === "" || data.gas === "" || data.gas === "0" || data.problemFile === undefined || data.dataFile === undefined || !permitted || submitting)
     }
 
     const {mutateAsync: signAndExecuteTransaction} = useSignAndExecuteTransaction()

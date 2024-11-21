@@ -1,10 +1,11 @@
 'use client'
 
-import {ConnectButton} from "@mysten/dapp-kit";
+import {ConnectButton, useCurrentAccount} from "@mysten/dapp-kit";
 import {useAppSelector} from "@/store";
 import Image from "next/image";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Link from "next/link";
+import {isPermitted} from "@/lib/contracts";
 
 const buttons = [
     {
@@ -22,7 +23,17 @@ const buttons = [
 ]
 
 export default function Navigation() {
+    const account = useCurrentAccount();
+    const [permitted, setPermitted] = useState<boolean>(false);
     const tab = useAppSelector(state => state.oj.tab);
+
+    useEffect(() => {
+        if (!account) {
+            setPermitted(false);
+        } else {
+            isPermitted(account.address).then(permission => setPermitted(permission));
+        }
+    }, [account]);
 
     return (
         <div
@@ -32,10 +43,11 @@ export default function Navigation() {
                     <h1 className="hidden">LetsMoveOJ</h1>
                     <Image src="/logo/logo.jpeg" alt="HOH Logo" width={60} height={60} priority={true}/>
                 </Link>
-                {buttons.map((button, idx) => <Link
-                    href={button.link}
-                    className={(idx === tab ? "px-4 h-16 bg-[#080808] text-white" : "") + " leading-[4rem] hover:text-white transition-all"}
-                    key={idx}>{button.str}</Link>
+                {buttons.map((button, idx) =>
+                    (permitted || button.str !== "出题") && <Link
+                        href={button.link}
+                        className={(idx === tab ? "px-4 h-16 bg-[#080808] text-white" : "") + " leading-[4rem] hover:text-white transition-all"}
+                        key={idx}>{button.str}</Link>
                 )}
             </div>
             <ConnectButton/>

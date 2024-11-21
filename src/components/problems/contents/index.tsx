@@ -89,7 +89,7 @@ export default function ProblemContents({id}: { id: string }) {
     useEffect(() => {
         setHasAccepted(acceptedList.find(it => it === id) !== undefined);
         setHasShared(sharedList.find(it => it === id) !== undefined);
-    }, [setHasAccepted, setHasShared, acceptedList, sharedList, id]);
+    }, [acceptedList, sharedList, id]);
 
     const fileChange = (event: ChangeEvent<HTMLInputElement>) => {
         setFile(event.target.files![0]);
