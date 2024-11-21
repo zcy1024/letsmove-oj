@@ -9,6 +9,7 @@ import {useRouter} from "next/navigation";
 import {submit, acceptProblem, personalShare} from "@/lib/contracts"
 import {useCurrentAccount} from "@mysten/dapp-kit";
 import {useDispatch} from "react-redux";
+import Link from "next/link";
 
 export default function ProblemContents({id}: { id: string }) {
     const [packageID, setPackageID] = useState<string>("");
@@ -106,10 +107,10 @@ export default function ProblemContents({id}: { id: string }) {
     }
 
     return (
-        <div className="min-h-[86vh] px-3 bg-white shadow-xl">
+        <div className="min-h-[85vh] px-3 bg-white shadow-xl">
             <h2 className="py-10 text-2xl select-text">{id}. {problem?.title}</h2>
             <hr/>
-            <article className="pt-3 prose max-w-[50rem] select-text">
+            <article className="py-3 prose max-w-[50rem] select-text">
                 {detail && <MDXRemote {...detail}/>}
             </article>
             <div
@@ -126,10 +127,11 @@ export default function ProblemContents({id}: { id: string }) {
                     <span>总提交数：</span>
                     <span>{problem?.submitted}</span>
                 </p>
-                <p className="flex justify-between items-center h-14 px-3">
+                <p className="relative flex justify-between items-center h-14 px-3">
                     <span>PackageID:</span>
                     <input className="px-2 text-right focus:outline-0" type="text" ref={packageIDRef}
-                           onChange={changePackageID}/>
+                           onChange={changePackageID} placeholder="请输入PackageID"/>
+                    <Link href="/problem/rules" className="absolute bottom-0 right-0 text-xs opacity-80 hover:text-blue-600 transition-colors">more</Link>
                 </p>
                 <p className="flex justify-between items-center h-14 pl-1 pr-3 bg-[#f9f9f9]">
                     <button

@@ -31,14 +31,14 @@ export default function ShareContents({id}: { id: string }) {
     }, [share, shares, id, problems]);
 
     return (
-        <div className="min-h-[86vh] px-3 bg-white shadow-xl select-text">
+        <div className="min-h-[85vh] px-3 bg-white shadow-xl select-text">
             <h2 className="pt-10 text-3xl font-bold">{problemTitle}</h2>
             <div className="h-10 leading-10 text-sm opacity-75">
                 <span className="mr-10">作者：{share?.sharer}</span>
                 <span>时间：{share?.share_time}</span>
             </div>
             <hr/>
-            <article className="pt-3 prose max-w-none select-text">
+            <article className="py-3 prose max-w-none select-text">
                 {detail && <MDXRemote {...detail}/>}
             </article>
         </div>

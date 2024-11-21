@@ -3,6 +3,7 @@
 import {ChangeEvent, useRef, useState} from "react";
 import {AddQuestion} from "@/lib/contracts"
 import {useCurrentAccount, useSignAndExecuteTransaction} from "@mysten/dapp-kit";
+import Link from "next/link";
 
 type dataType = {
     title: string,
@@ -109,6 +110,7 @@ export default function Questions() {
                     {!submitting ? "提交" : "按F12查看详情..."}
                 </button>
             </div>
+            <Link href="/question/rules" className="absolute bottom-16 right-6 text-xs opacity-80 hover:text-blue-600 transition-colors">more</Link>
         </div>
     )
 }
