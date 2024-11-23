@@ -108,9 +108,6 @@ export default function ProblemContents({id}: { id: string }) {
         personalShare(account!.address, id, file!, setShareTips).then(ret => {
             setShareTips(ret);
             setSharing(false);
-            if (ret === "Congratulations") {
-                sharedList.push(id);
-            }
         });
     }
 
