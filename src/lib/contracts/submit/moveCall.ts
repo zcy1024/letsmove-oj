@@ -44,7 +44,8 @@ export default async function moveCall(lines: string[], packageID: string, gas: 
         const split = line.split(' ');
         const stIdx = argsLen === 0 ? 1 : 0;
         const opt = split[stIdx];
-        const val = split[stIdx + 1];
+        const preLen = opt.length + 1 + (stIdx === 1 ? split[0].length + 1 : 0);
+        const val = line.slice(preLen);
         args.push(pure(tx, opt, val));
     });
     tx.moveCall({
