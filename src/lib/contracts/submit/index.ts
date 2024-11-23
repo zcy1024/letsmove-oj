@@ -1,33 +1,9 @@
 import {getProblemByID} from "@/lib/contracts"
-import {Transaction, TransactionArgument} from "@mysten/sui/transactions";
 import {read} from "@/utils";
 import moveCall from "@/lib/contracts/submit/moveCall";
 import {suiClient} from "@/config";
 import {Dispatch, SetStateAction} from "react";
-
-function strToVec(str: string) {
-    const ret: string[] = [];
-    str.split(' ').forEach(item => {
-        ret.push(item);
-    });
-    return ret;
-}
-
-function pure(tx: Transaction, opt: string, val: string) {
-    if (opt === "u64") {
-        return tx.pure.u64(val);
-    }
-    if (opt === "string") {
-        return tx.pure.string(val);
-    }
-    if (opt === "u64_vector") {
-        return tx.pure.vector("u64", strToVec(val).map(item => Number(item)));
-    }
-    if (opt === "string_vector") {
-        return tx.pure.vector("string", strToVec(val));
-    }
-    return tx.pure.u64(val);
-}
+import tryToSolve from "@/lib/contracts/submit/tryToSolve";
 
 function getAnswer(output: string) {
     const words = output.split(' ');
@@ -75,13 +51,12 @@ async function checkAnswer(output: string, eventOutput: string, createOutput: st
 }
 
 export default async function submit(pid: string, packageID: string, setTips: Dispatch<SetStateAction<string>>) {
-    // pid: 2 PackageID: 0xd3176922e3ff9d2f654385c481adcfeacffc6de1b6c0264731fb5e47ab87e83b
     setTips("Checking problem...");
     const problem = await getProblemByID(pid);
     if (!problem) {
         return "Pid Error!";
     }
-
+    await tryToSolve(pid);
     const inputs = problem.inputs;
     const outputs = problem.outputs;
     let i = 0;
@@ -89,23 +64,10 @@ export default async function submit(pid: string, packageID: string, setTips: Di
         setTips(`Running on Test #${i + 1}`);
         const input = inputs[i];
         const output = outputs[i];
-        const tx = new Transaction();
-        const args: TransactionArgument[] = [];
-
         const inputText = await read({blobId: input});
         const lines = inputText.split('\n');
-        lines.forEach(line => {
-            const split = line.split(' ');
-            if (split.length < 3) {
-                return;
-            }
-            const opt = split[1];
-            const val = split[2];
-            args.push(pure(tx, opt, val));
-        });
-
         try {
-            const [eventOutput, createOutput] = await moveCall(args, packageID, problem.gas, pid);
+            const [eventOutput, createOutput] = await moveCall(lines, packageID, problem.gas);
             const isOK = await checkAnswer(output, eventOutput, createOutput);
             if (!isOK) {
                 return `Error on Test #${i + 1}`
@@ -114,7 +76,6 @@ export default async function submit(pid: string, packageID: string, setTips: Di
             console.log(error);
             return "Run Time Error"
         }
-
         i = i + 1;
     }
     return "Accepted";

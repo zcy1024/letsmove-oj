@@ -43,20 +43,28 @@ export default function ProblemContents({id}: { id: string }) {
     const submitAnswer = async () => {
         setSubmitting(true);
         submit(id, packageID, setTips).then(ret => {
+            const submitted = Number(problem!.submitted) + 1;
             if (ret === "Accepted") {
                 setTips("Recording...");
                 acceptProblem(account!.address, id).then(success => {
                     setTips(success ? ret : "Recording Error");
                     setSubmitting(false);
                     dispatch(refreshData(account?.address));
-                    if (success) {
-                        acceptedList.push(id);
-                    }
+                    const accepted = Number(problem!.accepted) + (success ? 1 : 0);
+                    setProblem({
+                        ...problem!,
+                        accepted,
+                        submitted,
+                    });
                 });
             } else {
                 setTips(ret);
                 setSubmitting(false);
                 dispatch(refreshData(account?.address));
+                setProblem({
+                    ...problem!,
+                    submitted,
+                });
             }
         });
     }
