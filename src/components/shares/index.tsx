@@ -15,7 +15,7 @@ export default function Shares() {
                 <span className="flex-1">标题</span>
                 <div className="flex justify-between w-2/3">
                     <span>作者</span>
-                    <span className="pr-[6.5rem]">时间</span>
+                    <span className="pr-28">时间</span>
                 </div>
             </div>
             {Array.from(shares.keys()).map((key, index) => {
@@ -30,7 +30,7 @@ export default function Shares() {
                         {(problem ? problem.title : "Some Problem")}
                     </span>
                         </Link>
-                        <div className="flex justify-between w-2/3">
+                        <div className="flex justify-between w-2/3 tabular-nums">
                             <span>{share.sharer}</span>
                             <span>{share.share_time}</span>
                         </div>
