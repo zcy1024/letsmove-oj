@@ -45,7 +45,7 @@ async function checkAnswer(output: string, eventOutput: string, createOutput: st
         const parsedOutput = JSON.parse(createOutput) as createOutputType;
         const objectId = parsedOutput.objectId;
         const userResult = await getResultFromObjectId(objectId);
-        return userResult === `{"id":{"id":"${objectId}"},${result.slice(1)}`;
+        return userResult === `{"id":{"id":"${objectId}"},${result.slice(1)}` || userResult === `${result.slice(0, result.length - 1)},"id":{"id":"${objectId}"}}`;
     }
     return false;
 }
