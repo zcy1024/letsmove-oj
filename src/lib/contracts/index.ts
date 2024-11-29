@@ -6,6 +6,7 @@ import personalShare from "@/lib/contracts/share";
 import getShare from "@/lib/contracts/share/getShare";
 import getShareByID from "@/lib/contracts/share/getShareByID";
 import isPermitted from "@/lib/contracts/questions/isPermitted";
+import deleteByID from "@/lib/contracts/share/deleteByID";
 
 export {
     AddQuestion,
@@ -17,5 +18,6 @@ export {
     personalShare,
     getShare,
     getShareByID,
-    isPermitted
+    isPermitted,
+    deleteByID
 }
