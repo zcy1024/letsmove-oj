@@ -1,14 +1,14 @@
 import {ProblemContents} from "@/components"
 
-export function generateStaticParams() {
-    const ids: {id: string}[] = []
-    let i = 1;
-    while (i < 100) {
-        ids.push({id: i.toString()});
-        i = i + 1;
-    }
-    return ids
-}
+// export function generateStaticParams() {
+//     const ids: {id: string}[] = []
+//     let i = 1;
+//     while (i < 100) {
+//         ids.push({id: i.toString()});
+//         i = i + 1;
+//     }
+//     return ids
+// }
 
 export default async function ProblemPage({params}: { params: Promise<{ id: string }> }) {
     const id = (await params).id;

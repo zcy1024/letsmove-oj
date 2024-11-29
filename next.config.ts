@@ -5,8 +5,8 @@ import rehypeKatex from "rehype-katex";
 
 const nextConfig: NextConfig = {
     /* config options here */
-    output: 'export',
-    images: { unoptimized: true },
+    // output: 'export',
+    // images: { unoptimized: true },
     pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx']
 };
 
