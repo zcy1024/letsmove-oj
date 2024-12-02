@@ -160,9 +160,9 @@ export default function ProblemContents({id}: { id: string }) {
                         </p>
                         <p className="flex justify-between items-center h-14 pl-1 pr-3 bg-[#f9f9f9]">
                             <button
-                                className={"px-2 h-8 w-[4.5rem] text-center leading-8 rounded-full transition-all " + (file ? "bg-white cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
+                                className={"px-2 h-8 w-[4.5rem] text-center leading-8 rounded-full transition-all " + (file && !sharing ? "bg-white cursor-pointer hover:scale-105 active:scale-95" : "text-[#999]")}
                                 onClick={shareFile}
-                                disabled={!file}>{hasShared ? "再次分享" : "分享"}
+                                disabled={!file || sharing}>{sharing ? "稍后" : (hasShared ? "再次分享" : "分享")}
                             </button>
                             <span
                                 className={sharing ? "" : (shareTips === "Congratulations" ? "text-green-600" : "text-red-600")}>{shareTips}</span>
