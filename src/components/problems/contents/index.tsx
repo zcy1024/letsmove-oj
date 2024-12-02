@@ -1,7 +1,7 @@
 'use client'
 
 import {ChangeEvent, useEffect, useRef, useState} from "react";
-import {stringToMap, problemType, refreshData} from "@/store/modules/oj";
+import {stringToMap, problemType, refreshData, refreshScore} from "@/store/modules/oj";
 import {AppDispatch, useAppSelector} from "@/store";
 import {read, strToMDXElement} from "@/utils"
 import {MDXRemote, type MDXRemoteSerializeResult} from "next-mdx-remote";
@@ -56,6 +56,7 @@ export default function ProblemContents({id}: { id: string }) {
                         accepted,
                         submitted,
                     });
+                    dispatch(refreshScore(account!.address));
                 });
             } else {
                 setTips(ret);

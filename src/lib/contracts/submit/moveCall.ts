@@ -42,6 +42,9 @@ export default async function moveCall(lines: string[], packageID: string, gas: 
     lines.forEach(line => {
         const argsLen = args.length;
         const split = line.split(' ');
+        if (split.length < (argsLen === 0 ? 3 : 2)) {
+            return;
+        }
         const stIdx = argsLen === 0 ? 1 : 0;
         const opt = split[stIdx];
         const preLen = opt.length + 1 + (stIdx === 1 ? split[0].length + 1 : 0);
