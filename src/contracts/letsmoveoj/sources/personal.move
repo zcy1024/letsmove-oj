@@ -1,6 +1,7 @@
 module letsmoveoj::personal;
 
 use sui::vec_map::{Self, VecMap};
+use sui::vec_set;
 use letsmoveoj::problem::ProblemList;
 use letsmoveoj::admin::AdminList;
 
@@ -57,4 +58,21 @@ public fun accepted(list: &mut PersonList, user: address, pid: u64): bool {
 
 public fun share_content(list: &mut PersonList, user: address, sid: u64) {
     list.list[&user].share.push_back(sid);
+}
+
+public fun calculate_score(list: &PersonList, user: address): u64 {
+    if (!list.list.contains(&user)) {
+        return 0
+    };
+    let accepted = list.list[&user].accepted;
+    let mut set = vec_set::empty<u64>();
+    let mut i = 0;
+    while (i < accepted.length()) {
+        let pid = accepted[i];
+        if (!set.contains(&pid)) {
+            set.insert(pid);
+        };
+        i = i + 1;
+    };
+    set.size()
 }

@@ -26,7 +26,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
             <title>LetsMoveOJ</title>
             <meta name="keywords" content="LetsMoveOJ, Sui, Move, Web3"/>
             <meta name="description" content="一个提升Move语言编码能力的平台！"/>
-            <link rel="preload" as="image" href="/logo/logo.jpeg"/>
+            {/*<link rel="preload" as="image" href="/logo/logo.jpeg"/>*/}
             <link rel="icon" as="image" href="/logo/logo.jpeg"/>
         </head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased select-none`}>

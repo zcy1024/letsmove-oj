@@ -1,5 +1,6 @@
 import {createSlice, Dispatch, ThunkDispatch, UnknownAction} from "@reduxjs/toolkit";
 import {getPersonalInfo, getProblems, getShare} from "@/lib/contracts"
+import {getScore} from "@/lib/contracts/nft";
 
 export type problemType = {
     title: string,
@@ -27,7 +28,8 @@ type initialStateType = {
     tab: number,
     problems: string,
     personal: personalType,
-    share: string
+    share: string,
+    score: number
 };
 
 const initialState = {
@@ -37,7 +39,8 @@ const initialState = {
         accepted: [],
         share: []
     },
-    share: "{}"
+    share: "{}",
+    score: 0
 } as initialStateType;
 
 const ojStore = createSlice({
@@ -55,11 +58,14 @@ const ojStore = createSlice({
         },
         setShare(state, action: { payload: string }) {
             state.share = action.payload
+        },
+        setScore(state, action: { payload: number }) {
+            state.score = action.payload
         }
     }
 })
 
-const {setTab, setProblems, setPersonal, setShare} = ojStore.actions;
+const {setTab, setProblems, setPersonal, setShare, setScore} = ojStore.actions;
 
 const refreshData = (user?: string) => {
     return async (dispatch: ThunkDispatch<{
@@ -82,6 +88,14 @@ const stringToMap = (str: string, type: number) => {
     return new Map<string, shareType>(Object.entries(JSON.parse(str)));
 }
 
-export {setTab, refreshData, stringToMap};
+const refreshScore = (user: string) => {
+    return async (dispatch: ThunkDispatch<{
+        oj: initialStateType;
+    }, undefined, UnknownAction> & Dispatch) => {
+        dispatch(setScore(await getScore(user)));
+    }
+}
+
+export {setTab, refreshData, stringToMap, refreshScore};
 
 export default ojStore.reducer;
