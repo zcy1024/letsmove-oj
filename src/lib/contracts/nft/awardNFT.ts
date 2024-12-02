@@ -9,13 +9,13 @@ type Network = "mainnet" | "testnet" | "devnet" | "localnet";
 
 const network = (process.env.NEXT_PUBLIC_NETWORK as Network) || "testnet";
 
-export default async function awardNFT(user: string, pid: string) {
+export default async function awardNFT(user: string) {
     const rpcUrl = getFullnodeUrl(network);
     const client = new SuiClient({url: rpcUrl});
     const tx = new Transaction();
     const user_address = tx.pure.address(user);
     const list = tx.object(PersonList);
-    const move_pid = tx.pure.u64(Number(pid));
+    const move_pid = tx.pure.u64(0);
     const problem_list = tx.object(ProblemList);
     const admin_list = tx.object(AdminList);
     tx.moveCall({

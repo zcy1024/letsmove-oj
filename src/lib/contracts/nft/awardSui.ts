@@ -32,7 +32,7 @@ async function acceptProblem(user: string, pid: string) {
     return result.effects!.status.status === "success";
 }
 
-export default async function awardSui(user: string, pid: string) {
+export default async function awardSui(user: string) {
     const rpcUrl = getFullnodeUrl("mainnet");
     const client = new SuiClient({ url: rpcUrl });
     const tx = new Transaction();
@@ -45,7 +45,7 @@ export default async function awardSui(user: string, pid: string) {
     }
     const coin = tx.splitCoins(tx.gas, [amount]);
     tx.transferObjects([coin], user);
-    const recorded = await acceptProblem(user, pid);
+    const recorded = await acceptProblem(user, "0");
     if (!recorded) {
         return false;
     }

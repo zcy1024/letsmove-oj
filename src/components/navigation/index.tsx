@@ -56,15 +56,15 @@ export default function Navigation() {
         if (!account)
             return
         if (score === 3) {
-            checkEnoughScore(account.address, 3).then(([isEnough, pid]) => {
+            checkEnoughScore(account.address, 3).then(isEnough => {
                 if (isEnough) {
-                    awardNFT(account.address, pid).then((success) => showAward(success ? "NFT Award!" : ""));
+                    awardNFT(account.address).then((success) => showAward(success ? "NFT Award!" : ""));
                 }
             })
         } else if (score === 8) {
-            checkEnoughScore(account.address, 8).then(([isEnough, pid]) => {
+            checkEnoughScore(account.address, 8).then(isEnough => {
                 if (isEnough) {
-                    awardSui(account.address, pid).then((success) => showAward(success ? "Sui Award!" : ""));
+                    awardSui(account.address).then((success) => showAward(success ? "Sui Award!" : ""));
                 }
             })
         }
