@@ -40,13 +40,15 @@ entry fun accept_problem(
     admin_list: &AdminList,
     ctx: &TxContext
 ) {
-    assert!(problem_list.has_problem(pid), E_NOT_CORRECT_PROBLEM);
+    assert!(pid == 0 || problem_list.has_problem(pid), E_NOT_CORRECT_PROBLEM);
     assert!(admin_list.is_admin(ctx.sender()), E_NOT_ADMIN);
     if (!list.list.contains(&user)) {
         new_user(user, list);
     };
     list.list[&user].accepted.push_back(pid);
-    problem_list.accept_problem(pid);
+    if (pid > 0) {
+        problem_list.accept_problem(pid);
+    };
 }
 
 public fun accepted(list: &mut PersonList, user: address, pid: u64): bool {
